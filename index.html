@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#071019" />
+    <meta name="description" content="Velocity City — a procedural 3D open-world driving and tuning simulator." />
+    <title>Velocity City — Driving Simulator</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div id="game-root">
+      <canvas id="game-canvas" aria-label="3D driving simulator"></canvas>
+      <div id="loading-screen"><div class="loading-brand">VELOCITY<span>CITY</span></div><div class="loader-track"><i></i></div><p>BUILDING YOUR CITY</p></div>
+      <div id="hud" class="hidden">
+        <div class="top-left">
+          <div class="minimap-wrap"><canvas id="minimap" width="180" height="180"></canvas><span class="map-label">CITY 01</span></div>
+          <div class="zone-label"><b id="zone-name">DOWNTOWN</b><small id="zone-sub">FREE ROAM</small></div>
+        </div>
+        <div class="top-right">
+          <div class="cash-card"><small>WALLET</small><strong id="cash-value">$500,000</strong></div>
+          <div class="fps-card"><b id="fps-value">60</b><small>FPS</small></div>
+          <button id="camera-button" class="top-action"><span>◉</span><small>CHASE CAM</small></button>
+          <button id="garage-button" class="top-action accent"><span>⌘</span><small>GARAGE</small></button>
+          <button id="phone-button" class="top-action"><span>▦</span><small>SETTINGS</small></button>
+        </div>
+        <aside id="quick-drawer" class="glass-panel hidden">
+          <div class="panel-heading"><div><small>VEHICLE SYSTEMS</small><h3>CAR SETTINGS</h3></div><button class="icon-btn" data-close="quick-drawer">×</button></div>
+          <div class="setting-row"><span>Drivetrain</span><div class="segmented" id="drive-options"><button data-drive="FWD">FWD</button><button data-drive="RWD" class="active">RWD</button><button data-drive="AWD">AWD</button></div></div>
+          <div class="setting-row"><span>Traction control</span><button class="toggle active" data-setting="tcs"></button></div>
+          <div class="setting-row"><span>ABS</span><button class="toggle active" data-setting="abs"></button></div>
+          <div class="setting-row"><span>Stability assist</span><button class="toggle active" data-setting="esp"></button></div>
+          <div class="setting-row"><span>Drift mode</span><button class="toggle" data-setting="drift"></button></div>
+          <div class="setting-row"><span>Engine</span><button id="engine-toggle" class="pill-button active">RUNNING</button></div>
+          <button id="respawn-button" class="wide-ghost">↻ RESPawn ON ROAD</button>
+          <button id="walk-button" class="wide-ghost">EXIT CAR · WALK MODE</button>
+        </aside>
+        <div id="left-controls" class="control-cluster">
+          <div class="signal-row"><button class="mini-control" data-signal="left">◀</button><button class="mini-control" data-signal="hazard">!</button><button class="mini-control" data-signal="right">▶</button><button id="headlight-button" class="mini-control">☼</button><button id="horn-button" class="mini-control">H</button></div>
+          <div id="steering-wheel" class="steering-wheel"><div class="wheel-spoke s1"></div><div class="wheel-spoke s2"></div><div class="wheel-spoke s3"></div><div class="wheel-hub">V</div></div>
+          <div class="steer-hint">STEER</div>
+        </div>
+        <div id="right-controls" class="control-cluster">
+          <div class="gear-stack"><button data-gear="P">P</button><button data-gear="R">R</button><button data-gear="N">N</button><button data-gear="D" class="selected">D</button><div class="manual-row"><button id="manual-down">M−</button><button id="manual-up">M+</button></div></div>
+          <div class="pedal-stack"><button id="gas-pedal" class="pedal gas"><span>THROTTLE</span><b>▲</b></button><button id="brake-pedal" class="pedal brake"><span>BRAKE</span><b>■</b></button></div>
+          <button id="handbrake-button" class="handbrake"><b>P</b><small>HANDBRAKE</small></button>
+        </div>
+        <div id="dashboard" class="dashboard">
+          <div class="dash-left"><small>FUEL</small><div class="bar-track"><i id="fuel-bar" style="width:82%"></i></div><small id="fuel-text">82%</small></div>
+          <div class="tach-wrap"><svg viewBox="0 0 220 116" class="tach-svg"><path d="M22 102 A88 88 0 0 1 198 102" class="tach-track"/><path id="tach-progress" d="M22 102 A88 88 0 0 1 198 102" class="tach-progress"/><g id="tach-needle"><path d="M110 102 L110 28"/><circle cx="110" cy="102" r="6"/></g><text x="30" y="90">0</text><text x="52" y="45">2</text><text x="105" y="27">5</text><text x="167" y="45">7</text><text x="185" y="90">9</text></svg><div class="rpm-readout"><b id="rpm-value">0</b><small>RPM ×1000</small></div></div>
+          <div class="speed-display"><b id="speed-value">000</b><small>KM/H</small><em id="gear-value">N</em></div>
+          <div class="dash-right"><small>ENGINE TEMP</small><div class="bar-track"><i id="temp-bar" style="width:34%"></i></div><small id="temp-text">82°C</small><small class="odo">ODO <b id="odo-value">000.0</b> KM</small></div>
+        </div>
+        <div id="walk-controls" class="walk-controls hidden"><div id="walk-stick"><div></div></div><button id="enter-car-button" class="enter-car">ENTER CAR</button></div>
+        <div id="interaction-hint" class="interaction-hint hidden"></div>
+        <div id="mission-toast" class="mission-toast hidden"></div>
+        <div id="reward-toast" class="reward-toast hidden"></div>
+      </div>
+      <div id="garage-overlay" class="overlay hidden">
+        <div class="garage-shell">
+          <div class="garage-top"><div><div class="eyebrow">VELOCITY MOTORWORKS</div><h1>GARAGE <span>/ TUNING</span></h1></div><div class="garage-top-right"><div class="garage-wallet">AVAILABLE CASH <b id="garage-cash">$500,000</b></div><button id="close-garage" class="close-button">×</button></div></div>
+          <div class="garage-layout">
+            <section class="car-selector"><div class="section-head"><span>YOUR COLLECTION</span><small id="car-count">01 / 06 OWNED</small></div><div id="car-list" class="car-list"></div><div class="selected-car-card"><small>SELECTED VEHICLE</small><h2 id="selected-car-name">CIVIC HATCH</h2><div class="spec-grid"><div><b id="selected-hp">160</b><small>HP</small></div><div><b id="selected-nm">210</b><small>NM</small></div><div><b id="selected-weight">1250</b><small>KG</small></div></div><button id="spawn-selected" class="primary-button">DRIVE THIS CAR ↗</button></div></section>
+            <section class="tuning-area"><div class="section-head"><span>WORKSHOP CONFIGURATION</span><small>LIVE VEHICLE DATA</small></div><div class="tuning-tabs"><button class="active" data-tab="engine">01 ENGINE</button><button data-tab="gearbox">02 GEARBOX</button><button data-tab="suspension">03 SUSPENSION</button><button data-tab="visual">04 EXTERIOR</button></div><div id="tuning-content" class="tuning-content"></div></section>
+          </div>
+        </div>
+      </div>
+      <div id="mission-overlay" class="overlay hidden"><div class="mission-card"><button id="close-missions" class="close-button">×</button><div class="eyebrow">CITY 01 · DRIVER LICENSE</div><h2 id="mission-title">PARKING CHALLENGE</h2><p id="mission-description">Park inside the highlighted bay. Keep your speed under 8 km/h.</p><div class="mission-meta"><span>REWARD <b id="mission-reward">$2,500</b></span><span>TIME <b id="mission-time">45 SEC</b></span></div><button id="start-mission" class="primary-button">START CHALLENGE</button></div></div>
+      <div id="rotate-screen"><div class="rotate-icon">▱</div><b>ROTATE YOUR DEVICE</b><small>VELOCITY CITY IS BEST IN LANDSCAPE</small></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
